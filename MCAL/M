@@ -1,0 +1,37 @@
+# CC = avr-gcc
+# VPATH = App HAL/Keypad HAL/LCD MCAL/DIO
+# CC_FLAGS := -I MCAL/DIO -I LIB -I HAL/Keypad -I HAL/LCD -mmcu=atmega32 -std=c11 -Os -Wall -g 
+
+# final_hex:= outhex
+# TARGET:= main
+# OBJS := main.o
+
+
+# build: $(OBJS)
+# 	$(CC) -o $(TARGET).elf $(CC_FLAGS) $(OBJS)
+# 	avr-objcopy -j .text -j .data -O ihex $(TARGET).elf  $(final_hex).hex
+# 	@size $(final_hex).hex
+
+# .PHONY: flash
+# flash:
+# 	avrdude -F -B 1500kHz -c usbasp -p atmega32 -U flash:w:"$(final_hex).hex":i
+
+
+# main.o: App/main.c
+# 	@$(CC) $(CC_FLAGS) -c App/main.c
+
+# clean:
+# 	@rm *.o *.hex *.elf
+
+# VPATH = src include
+# # vpath %.c src
+# # vpath %.h include
+# CCFLAGS = -I include
+# program.out: main.o counter.o
+# 	gcc $^ -o $@
+
+# counter.o: counter.c counter.h
+# 	gcc $(CCFLAGS) -c $<
+
+# main.o: main.c
+# 	gcc -c $(CCFLAGS) $<
