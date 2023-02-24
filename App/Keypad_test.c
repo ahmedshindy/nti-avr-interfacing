@@ -12,10 +12,15 @@
 #include "LCD_interface.h"
 #include "util/delay.h"
 
+
+void display_from_one_to_nine(u8 copyVal);
+
 int main_Keypad()
 {
 	Keypad_vInit();
 	u8 LocalKeypadVal= NOTPRESSED;
+	
+	// these leds to print the number on them as binary
 	DIO_SetPinDir(DIO_PORTA,Pin5,OUTPUT);
 	DIO_SetPinDir(DIO_PORTA,Pin6,OUTPUT);
 	DIO_SetPinDir(DIO_PORTA,Pin4,OUTPUT);

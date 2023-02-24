@@ -1,5 +1,5 @@
 /*
- * Dio.c
+ * LCD_test.c
  * Created: 2/17/2023 12:39:40 PM
  * Author : Ahmed Shindy
  */
@@ -11,25 +11,18 @@
 #include "LCD_interface.h"
 #include "util/delay.h"
 
-void display_from_one_to_nine(u8 copyVal);
 
 int main()
 {
 	Keypad_vInit();
-
 	LCD_vInit();
-	LCD_vWriteCommand(0x0e); // CMD_CURSOR_ON_DISPLAN_ON
-	_delay_ms(10);
-	LCD_vWriteData(0X0F);
-	_delay_ms(10);
-	LCD_vWriteData(0XF0);
-	_delay_ms(10);
 	
-	while(1)
-	{
-		LCD_vWriteData('A');
-		_delay_ms(100);
-	}
+	// LCD_vWriteCommand(0x0e); // CMD_CURSOR_ON_DISPLAN_ON
+	LCD_vWriteData('A');
+	_delay_ms(1000);
+	LCD_vWriteData('B');
+	_delay_ms(1000);
+	while(1);
 }
 
 int main_DIO_TEST()

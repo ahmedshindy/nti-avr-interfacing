@@ -15,9 +15,13 @@
 
 #define RS_PORT					DIO_PORTA
 #define RS_PIN					Pin3
+
 #define EN_PORT					DIO_PORTA
 #define EN_PIN					Pin2
+
+#define RW_PORT					DIO_PORTA
 #define RW_PIN					Pin0
+
 
 
 

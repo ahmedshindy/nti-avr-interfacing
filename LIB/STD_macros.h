@@ -9,7 +9,7 @@
 #ifndef STD_MACROS_H_
 #define STD_MACROS_H_
 
-#define READ_BIT(reg,bit)    ((reg>>bit)&(1))
+#define READ_BIT(reg,bit)    ((reg>>bit)&(1U))
 
 
 
