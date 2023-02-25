@@ -1,5 +1,5 @@
 /*
- * Dio.c
+ * Calculator.c
  * Created: 2/17/2023 12:39:40 PM
  * Author : Ahmed Shindy
  */
@@ -14,16 +14,23 @@
 
 int main_calc()
 {
-	DIO_SetPinDir(DIO_PORTD,Pin0,OUTPUT);
+	LCD_vInit();
 	Keypad_vInit();
-	
+	u8 LocalTestVal=0xff;
 	
 	while(1)
 	{
-		
-		DIO_TogglePinValue(DIO_PORTD,Pin0);
-		_delay_ms(1000);
+	LocalTestVal = Keypad_u8Scan();
+	if(LocalTestVal == 0xff)	
+	{
+		continue;
 	}
-	
-	
+	else
+	{
+		LCD_vWriteData(LocalTestVal);
+		_delay_ms(1000);
+		LocalTestVal = 0xff;
+	}
+
+	}	
 }
