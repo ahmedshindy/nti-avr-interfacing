@@ -12,7 +12,7 @@
 #include "util/delay.h"
 
 
-int main()
+int main_LCD()
 {
 	Keypad_vInit();
 	LCD_vInit();
