@@ -13,70 +13,36 @@
 #include "util/delay.h"
 
 
-void display_from_one_to_nine(u8 copyVal);
+static void display_from_one_to_nine(u8 copyVal);
 
-int main_Keypad()
+int main()
 {
 	Keypad_vInit();
+	LCD_vInit();
+	LCD_vWriteString("Testing Keypad");
+
 	u8 LocalKeypadVal= NOTPRESSED;
-	
-	// these leds to print the number on them as binary
-	DIO_SetPinDir(DIO_PORTA,Pin5,OUTPUT);
-	DIO_SetPinDir(DIO_PORTA,Pin6,OUTPUT);
-	DIO_SetPinDir(DIO_PORTA,Pin4,OUTPUT);
-	DIO_SetPinDir(DIO_PORTB,Pin7,OUTPUT);
-
-
-	
-	for (int i=0; i<8; i++)
-	{
-		DIO_TogglePinValue(DIO_PORTA,Pin5);
-		_delay_ms(500);
-	}
-	DIO_SetPinValue(DIO_PORTB,Pin7,(LocalKeypadVal &=0x01));
-	_delay_ms(500);
-	DIO_SetPinValue(DIO_PORTB,Pin7,LOW);
-	DIO_SetPinValue(DIO_PORTA,Pin5,LOW);
-
-
+	u8 LocCharVal = 'A';
 	while(1)
 	{
-
-		LocalKeypadVal = Keypad_u8Scan();
-		while(Keypad_u8Scan() == NOTPRESSED);
-		/*
-		if(LocalKeypadVal == 1)
+		// LocalKeypadVal = keypad_u8check_press();
+		   LocalKeypadVal = Keypad_u8Scan();
+		if(LocalKeypadVal == NOTPRESSED)
 		{
-			// DIO_SetPinValue(DIO_PORTA,Pin5,HIGH);
-			 DIO_TogglePinValue(DIO_PORTA,Pin5);
-			 _delay_ms(300);
-			
-			LocalKeypadVal = NOTPRESSED;
+			continue;
 		}
-		*/
-		// display_from_one_to_nine(LocalKeypadVal);
-		// raad the bits bit by bit , display them one by one
-		
-		// DIO_SetPinValue(DIO_PORTB,Pin7,READ_BIT(LocalKeypadVal,0));
-		DIO_SetPinValue(DIO_PORTB,Pin7,HIGH);
-
-		DIO_SetPinValue(DIO_PORTA,Pin4,READ_BIT(LocalKeypadVal,1));
-		
-		 // DIO_SetPinValue(DIO_PORTA,Pin5,(LocalKeypadVal &=0x04));
-		 // DIO_SetPinValue(DIO_PORTA,Pin6,(LocalKeypadVal &=0x08));
-		 DIO_SetPinValue(DIO_PORTA,Pin5,READ_BIT(LocalKeypadVal,2));
-		 DIO_SetPinValue(DIO_PORTA,Pin6,READ_BIT(LocalKeypadVal,3));
-		
-		_delay_ms(1000);
-	DIO_SetPinValue(DIO_PORTB,Pin7,LOW);
-	DIO_SetPinValue(DIO_PORTA,Pin4,LOW);
-	DIO_SetPinValue(DIO_PORTA,Pin5,LOW);
-	DIO_SetPinValue(DIO_PORTA,Pin6,LOW);
-		
-		
+		else
+		{
+			// put the data onto lcd
+			LocCharVal = LocalKeypadVal + '0';
+			LCD_vWriteData(LocCharVal);
+			LocalKeypadVal = NOTPRESSED;
+		}	
 	}
-	
 }
+
+
+
 
 void display_from_one_to_nine(u8 copyVal)
 {

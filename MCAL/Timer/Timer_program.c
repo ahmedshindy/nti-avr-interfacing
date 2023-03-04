@@ -3,6 +3,7 @@
 #include "Timer_config.h"
 #include "Timer_private.h"
 #include "Timer_interface.h"
+#include "DIO_interface.h"
 #include "avr/interrupt.h"
 
 #define F_CPU   16000000UL
@@ -10,24 +11,52 @@
 u32 Set_OVF_Glogal_count;
 u8 Set_portion_OVF_Glogal_count;
 
-void Timer0_INIT(void)
+
+
+void Timer0_InitCTC(void)
 {
-    #if (TIMER == TIMER0) 
-    // clear bit 7,3    wgm00 01 normal
+    
+}
+void Timer0_Init_PWM(u8 DutyCycle)
+{
+
+}
+void Timer0_InitPhCorrPWM(u8 DutyCycle)
+{
+    // set oc0 output
+    DIO_SetPinDir(DIO_PORTB,Pin3,OUTPUT);
+    // PhCorr PWM
+    SET_BIT(TCCR0_Reg , WGM00);
+    OCR0_Reg = DutyCycle;
+    // CLK
+    TCCR0_Reg |=( CLK_SRC_PRE_SCALAR );
+    // OC0 clear on compare match
+    SET_BIT(TCCR0_Reg,COM01);
+}
+
+
+void Timer1_InitFastPWM(void)
+{
+    // set OC1A
+    // select mode 
+    // SET_BIT(TCCR1A,)
+    // SET_BIT(TCCR1A,)
+    // SET_BIT(TCCR1A,)
+    // SET_BIT(TCCR1A,)
+
+
+
+}
+void Timer0_Init(void)
+{
+    // CTC mode
     TCCR0_Reg &=~(1<<7);
     TCCR0_Reg &=~(1<<3); 
-    // clear bit 5,4  , 0c0 disconnected at normal mode
+    //0c0 disconnected
     TCCR0_Reg &=~(1<<5);
     TCCR0_Reg &=~(1<<4);
-
     sei();
     TIMSK_Reg |=(1<<0);
-
-    #elif (TIMER== TIMER1)
-    // TCCR0_Reg &=~(1<<5);
-    // TCCR0_Reg &=~(1<<4); 
-    #endif
-
 }
 void Timer0_Start(void)
 {

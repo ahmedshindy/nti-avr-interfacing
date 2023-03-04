@@ -13,11 +13,11 @@ extern u32 Set_OVF_Glogal_count;
 int main()
 {
 
-    Timer0_INIT();
+    Timer0_Init();
 
     Timer0_Start();
 
-    DIO_SetPinDir(DIO_PORTB,Pin7,OUTPUT);
+    DIO_SetPinDir(DIO_PORTB,Pin1,OUTPUT);
     DelayMs(1000);
 
 
@@ -34,13 +34,13 @@ int main()
 
 ISR(TIMER0_OVF_vect)
 {
-    static u32 counter =0;
+   volatile static u32 counter =0;
     counter++;
     if(counter >= Set_OVF_Glogal_count)
     {
         counter =0;
         // toggle port B , bin 0
-        DIO_TogglePinValue(DIO_PORTB,Pin0);
+        DIO_TogglePinValue(DIO_PORTB,Pin1);
         
     }
 }

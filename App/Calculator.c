@@ -15,41 +15,25 @@
 #include "LCD_interface.h"
 #include "util/delay.h"
 
-
-int main_calc()
+u8 GlobalLineArray[50] = {0};
+int main()
 {
-<<<<<<< HEAD
-	DIO_SetPinDir(DIO_PORTD,Pin0,OUTPUT);
 	Keypad_vInit();
-	
-	
-	while(1)
-	{
-		
-		DIO_TogglePinValue(DIO_PORTD,Pin0);
-		_delay_ms(1000);
-	}
-	
-	
-=======
 	LCD_vInit();
-	Keypad_vInit();
-	u8 LocalTestVal=0xff;
-	
-	while(1)
-	{
-	LocalTestVal = Keypad_u8Scan();
-	if(LocalTestVal == 0xff)	
-	{
-		continue;
-	}
-	else
-	{
-		LCD_vWriteData(LocalTestVal);
-		_delay_ms(1000);
-		LocalTestVal = 0xff;
-	}
 
-	}	
->>>>>>> eb155b22675510aee95b76adb41741fcb0a59ceb
+
+	while (1)
+	{
+		u8 counter =0;
+		u8 LocKeypadVal = Keypad_u8Scan();
+		while(LocKeypadVal != '=' && LocKeypadVal != NOTPRESSED)
+		{
+			GlobalLineArray[counter] = LocKeypadVal;
+			LCD_vWriteData(LocKeypadVal);
+
+			counter++;
+		}
+		
+	}
+	
 }

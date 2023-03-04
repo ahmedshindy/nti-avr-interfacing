@@ -9,10 +9,7 @@
 #include  "DIO_interface.h"
 #include "ADC_interface.h"
 
-void custom_delay(u32 val)
-{
-    _delay_ms(500);
-}
+
 int main()
 {
     u16 LocADC_Read= 0x0000;
@@ -27,7 +24,6 @@ int main()
     _delay_ms(100);
     while (1)
     {
-
         LocADC_Read = ADC_Read(ADC0);
         if(LocADC_Read > 500 )
         {
@@ -36,11 +32,13 @@ int main()
         }
         else if (LocADC_Read <= 500)
         {
-            
-
            DIO_SetPinValue(DIO_PORTB,Pin1,LOW);
         }
     }
-
     return 0;
 }
+
+// void custom_delay(u32 val)
+// {
+//     _delay_ms(500);
+// }

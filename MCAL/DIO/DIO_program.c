@@ -1,3 +1,5 @@
+#include "STD_macros.h"
+#include "STD_TYPES.h"
 #include "DIO_private.h"
 #include "DIO_interface.h"
 
@@ -118,16 +120,17 @@ u8 Dio_GetPinValue(PORT_TYPE PortNumber,PIN_TYPE PinNumber )
     switch (PortNumber)
     {
     case DIO_PORTA:
-        Return_value = ( PINA &=(1U<<PinNumber));
+        // Return_value = ( PINA &=(1U<<PinNumber));
+        Return_value = READ_BIT(PINA,PinNumber);
         break;
     case DIO_PORTB:
-        Return_value = ( PINB&=(1U<<PinNumber));
+        Return_value = READ_BIT(PINB,PinNumber);
         break;
     case DIO_PORTC:
-        Return_value = ( PINC&=(1U<<PinNumber));
+        Return_value = READ_BIT(PINC,PinNumber);
         break;
     case DIO_PORTD:
-        Return_value = ( PIND &=(1U<<PinNumber));
+        Return_value = READ_BIT(PIND,PinNumber);
         break;
     default:
         /*generate Error_Stat (Recommended)*/

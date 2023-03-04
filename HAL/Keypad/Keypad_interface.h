@@ -11,5 +11,6 @@
 #define	NOTPRESSED	0XFF
 void Keypad_vInit();
 u8	 Keypad_u8Scan();
+char keypad_u8check_press();
 
 #endif
