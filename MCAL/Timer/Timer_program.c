@@ -4,18 +4,26 @@
 #include "Timer_private.h"
 #include "Timer_interface.h"
 #include "DIO_interface.h"
+#include "LCD_interface.h"
 #include "avr/interrupt.h"
 
 #define F_CPU   16000000UL
 
 u32 Set_OVF_Glogal_count;
 u8 Set_portion_OVF_Glogal_count;
+volatile static u32 Global_OVFs_Counter =0;
+
+
 
 
 
 void Timer0_InitCTC(void)
 {
-    
+
+
+    // load ocr0
+    // select clk
+ 
 }
 void Timer0_Init_PWM(u8 DutyCycle)
 {
@@ -84,9 +92,19 @@ void Timer0_Stop(void)
     TCCR0_Reg &=~(1<<2);
 }
 
-
+/*
+* this function does everything , init CTC mode, uses interrupts to 
+* calculate the number of overflows and does not return untill
+* specified time is elapsed.
+*/
 void DelayMs(u16 total_time)
 {
+    // select ctc mode
+    CLR_BIT(TCCR0,WGM00);
+    SET_BIT(TCCR0,WGM01);
+    // load ocr0
+
+
     double  Loc_OVF_count = 0.0;
     u32 freq = F_CPU/CLK_SRC_PRE_SCALAR;
 
@@ -98,6 +116,34 @@ void DelayMs(u16 total_time)
 
     potrtion *= (256);
     Set_portion_OVF_Glogal_count = (u8)potrtion;
+
+    // select clk
+    SET_BIT(TCCR0,CS00);
+    SET_BIT(TCCR0,CS02);
+
+    // enable interrupts
+    sei();
+    SET_BIT(TIMSK,OCIE0);
+
+    while (Global_OVFs_Counter  > 0)
+    {
+        // wait here ya man
+    }
+    // stop timer, clear interrupts and return
+    cli();
+    CLR_BIT(TIMSK,OCIE0);
+    
+    CLR_BIT(TCCR0,CS00);
+    CLR_BIT(TCCR0,CS01);
+    CLR_BIT(TCCR0,CS02);
+    return ;
+}
+
+ISR(TIMER0_OVF_vect)
+{
+   Global_OVFs_Counter --;
+   // clear flag bit
+   CLR_BIT(TIFR,OCF0);
 }
 
 

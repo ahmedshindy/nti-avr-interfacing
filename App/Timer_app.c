@@ -14,33 +14,27 @@ int main()
 {
 
     Timer0_Init();
-
     Timer0_Start();
 
     DIO_SetPinDir(DIO_PORTB,Pin1,OUTPUT);
-    DelayMs(1000);
-
 
     while (1)
     {
-        /* code */
+        DelayMs(1000);
     }
-    
-    
-
     return 0;
 }
 
 
-ISR(TIMER0_OVF_vect)
-{
-   volatile static u32 counter =0;
-    counter++;
-    if(counter >= Set_OVF_Glogal_count)
-    {
-        counter =0;
-        // toggle port B , bin 0
-        DIO_TogglePinValue(DIO_PORTB,Pin1);
+// ISR(TIMER0_OVF_vect)
+// {
+//    volatile static u32 counter =0;
+//     counter++;
+//     if(counter >= Set_OVF_Glogal_count)
+//     {
+//         counter =0;
+//         // toggle port B , bin 0
+//         DIO_TogglePinValue(DIO_PORTB,Pin1);
         
-    }
-}
+//     }
+// }

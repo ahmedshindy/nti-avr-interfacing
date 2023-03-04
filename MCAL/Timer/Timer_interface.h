@@ -19,8 +19,9 @@ void Timer0_Init(void);
 void Timer0_Start(void);
 void Timer0_Stop(void);
 
-
+void Timer1_Init_ICU(void);
 void Timer1_InitFastPWM(void);
+
 /**General Functions: design later*/
 void Timer_Init(void);
 void Timer_Start(void);

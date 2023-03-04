@@ -5,9 +5,11 @@ CC_FLAGS := -mmcu=atmega32 -Os -std=c99 -Wall -g -F_CPU=8000000
 
 
 # These are each project dependencies and modules required
+ICU_OBJs			:= ICU_app.o Timer_program.o DIO_program.o LCD_program.o
+Ultrasonic_OBJs		:= Ultrasonic_app.o Timer_program.o DIO_program.o 
 MotorControl_OBJs 	:= MotorControl_app.o ADC_program.o Timer_program.o DIO_program.o 
 ADC_OBJs			:= ADC_test.o ADC_program.o Timer_program.o  Keypad_program.o DIO_program.o LCD_program.o
-Timer_OBJs			:= Timer_app.o Timer_program.o Keypad_test.o Keypad_program.o DIO_program.o LCD_program.o
+Timer_OBJs			:= Timer_app.o Timer_program.o  Keypad_program.o DIO_program.o LCD_program.o
 DIO_OBJs 			:= DIO_test.o DIO_program.o
 Keypad_OBJs 		:= Keypad_test.o Keypad_program.o DIO_program.o LCD_program.o
 LCD_OBJs			:= LCD_test.o DIO_program.o LCD_program.o Keypad_program.o
@@ -23,9 +25,19 @@ PROJECT_NAME := LCD_test
 # 	@size $(PROJECT_NAME).hex
 
 
-
-
 # Generating Project .elf , .hex files
+ICU_app: $(ICU_OBJs)
+	$(CC) $(INCLUDES) $(CC_FLAGS) $^ -o $@.elf
+	avr-objcopy -j .text -j .data -O ihex $@.elf  $@.hex
+	@size $@.hex
+	@rm *.o
+
+
+Ultrasonic_app: $(Ultrasonic_OBJs)
+	$(CC) $(INCLUDES) $(CC_FLAGS) $^ -o $@.elf
+	avr-objcopy -j .text -j .data -O ihex $@.elf  $@.hex
+	@size $@.hex
+	@rm *.o
 
 MotorControl_app: $(MotorControl_OBJs)
 	$(CC) $(INCLUDES) $(CC_FLAGS) $^ -o $@.elf
@@ -67,6 +79,11 @@ DIO_test: $(DIO_OBJs)
 	@rm *.o
 	
 # Projects compilation
+ICU_app.o:ICU_app.c
+	$(CC) $(INCLUDES) $(CC_FLAGS) -c $<	
+
+Ultrasonic_app.o:Ultrasonic_app.c
+	$(CC) $(INCLUDES) $(CC_FLAGS) -c $<	
 
 MotorControl_app.o: MotorControl_app.c
 	$(CC) $(INCLUDES) $(CC_FLAGS) -c $<	
