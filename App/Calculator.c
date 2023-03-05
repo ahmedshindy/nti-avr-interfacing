@@ -25,13 +25,24 @@ int main()
 	while (1)
 	{
 		u8 counter =0;
-		u8 LocKeypadVal = Keypad_u8Scan();
-		while(LocKeypadVal != '=' && LocKeypadVal != NOTPRESSED)
+		u8 LocKeypadVal = Keypad_u8Read();
+		if(LocKeypadVal == NOTPRESSED)
+		{
+			continue;
+		}
+		else if(LocKeypadVal == '=')
+		{
+			// go for processing
+			LCD_vWriteData(LocKeypadVal);
+						
+						
+		}
+		else
 		{
 			GlobalLineArray[counter] = LocKeypadVal;
 			LCD_vWriteData(LocKeypadVal);
-
 			counter++;
+			LocKeypadVal = NOTPRESSED;
 		}
 		
 	}

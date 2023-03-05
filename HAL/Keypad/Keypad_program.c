@@ -86,7 +86,7 @@ u8	 Keypad_u8Scan()
 }
 
 
- char keypad_u8check_press()
+ char Keypad_u8Read()
  {
 	 char arr[4][4]={{'7','8','9','/'},
 	 				{'4','5','6','*'},
@@ -117,6 +117,11 @@ u8	 Keypad_u8Scan()
 			x = Dio_GetPinValue(DIO_PORTD,COLs[coloumn]);
 			if(x==0)
 			 {
+				while (Dio_GetPinValue(DIO_PORTD,COLs[coloumn]) == 0)
+				{
+					// stuck here untill you lift your finger
+				}
+				
 				returnval=arr[row][coloumn];
 				break;
 			 }  

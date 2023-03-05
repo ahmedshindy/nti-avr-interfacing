@@ -130,3 +130,7 @@ void LCD_vWriteData(u8 data)
 	_delay_ms(1);
 }
 
+LCD_vClearScreen()
+{
+	LCD_vWriteCommand(Clear_Display_Screen);
+}
