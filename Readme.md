@@ -1,3 +1,4 @@
+# nti-avr interfacing
 - to build a specific application use `make app_name`
 - to test on proteus, open simulation/project_name and load the hex file and test.
 
