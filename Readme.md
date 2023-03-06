@@ -13,7 +13,7 @@
  you should see .elf and .hex files generated
 
 2. Open Simulation/ICU_app, load the hex file manually if not loaded and run.
-3. Modify the distance and you should see the results, duty cycle & frequency printed on the 		lcd
+3. Modify the freq and duty cycle of the clock generator and you should see the results, duty cycle & frequency printed on the 	lcd
 
 ![Ultrasonic](./Simulation/screenshots/ICU_app.png)
 
