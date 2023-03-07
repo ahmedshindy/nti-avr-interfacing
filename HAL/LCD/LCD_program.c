@@ -134,3 +134,46 @@ LCD_vClearScreen()
 {
 	LCD_vWriteCommand(Clear_Display_Screen);
 }
+
+
+void LCD_WriteNUM(u32 NUM)
+{
+	u32 reminder=0 , reversed = 0 , digits = 0;
+	if(NUM < 0)
+	{
+		LCD_vWriteData('-');
+		NUM *= (-1);
+	}
+	while(NUM)
+	{
+		reminder = NUM % 10;
+		reversed = reversed * 10 + reminder; 
+		NUM /= 10;
+		digits++;
+	}
+	while(digits)
+	{
+		reminder = reversed % 10;
+		LCD_vWriteData(reminder + '0');
+		reversed = reversed / 10;
+		digits--;
+	}
+}
+void LCD_MoveCursor(u8 row,u8 coloumn )
+{
+	u8 data ;
+	if(row>2||row<1||coloumn>16||coloumn<1)
+	{
+		data=0x80;
+	}
+	else if(row==1)
+	{
+		data=0x80+coloumn-1 ;
+	}
+	else if (row==2)
+	{
+		data=0xc0+coloumn-1;
+	}
+	LCD_vWriteCommand(data);
+	_delay_ms(1);
+}

@@ -15,4 +15,8 @@ void LCD_vSendString(u8 *data);
 void LCD_vClearScreen();
 void LCD_MoveCursor(u8 row,u8 coloumn);
 void LCD_vWriteString(char * Str);
+void LCD_WriteNUM(u32 NUM);
+
+
+
 #endif /* LCD_INTERFACE_H_ */

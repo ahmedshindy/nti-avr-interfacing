@@ -21,49 +21,97 @@ volatile double Global_s64_Frequency;
 u8 volatile edge = 0;
 
 
-void LCD_WriteNUM(u32 NUM);
 void LCD_WriteNumber(u32 Number);
 void Timer1_Calc_Freq_and_Duty();
 // 65536
 // #define TIMER_CLK           ;
 #define TimerCLK               (F_CPU/CLK_DIV_BY_64) 
 
-int main()
+int main ()
 {
+    u16 ICR_A, ICR_B, ICR_C,PulseOn,DutyCycle,Period,Freq;
     LCD_vInit();
-    LCD_vWriteData('A');
-    LCD_vWriteData('B');
+    TCCR1A = 0;
+    // clear the flag
+	TIFR = (1<<ICF1);  	
+    // rising edge, no scalar, noise canceler
+	TCCR1B = 0xc1;  	
+	while ((TIFR&(1<<ICF1)) == 0);
+	ICR_A = ICR1;  		
+	TIFR = (1<<ICF1);  
+	// falling edge, no scalar, noise canceler
+	TCCR1B = 0x81;  	
+	while ((TIFR&(1<<ICF1)) == 0);
+	ICR_B = ICR1;  		
+	TIFR = (1<<ICF1);  	
+	
+    // rising edge , no scalar, noise canceler
+	TCCR1B = 0xc1;  	
+	while ((TIFR&(1<<ICF1)) == 0);
+	ICR_C = ICR1;  		
+	TIFR = (1<<ICF1);  
+    // stop the timer
+	TCCR1B = 0;  	
 
-   // LCD_WriteNUM(5324);
-
-    LCD_vWriteCommand(Clear_Display_Screen);
+    if(ICR_A < ICR_B  && ICR_B < ICR_C)	
+    {
+        PulseOn = ICR_B - ICR_A;
+        Period = ICR_C - ICR_A;
+        DutyCycle = ( ((float)PulseOn/Period) *100);
+        Freq = F_CPU / Period;
+        LCD_vWriteString("F: ");
+        LCD_WriteNUM(Freq);
+        LCD_MoveCursor(2,1);
+        LCD_vWriteString("Duty: ");
+        LCD_WriteNUM(DutyCycle);
+    }
+    else
+    {
+        LCD_vClearScreen();
+        LCD_vWriteString("Calc Error");
+    }
     while (1)
     {
-        Timer1_Calc_Freq_and_Duty();
-        while(edge  < 3 );
-        LCD_vWriteString("2hda");
-        _delay_ms(500);
-        // make your calculations
-        // display 2 values on lcd
-        LCD_vWriteCommand(Clear_Display_Screen);
-        LCD_vWriteData('F');
-        LCD_vWriteData(':');
-        LCD_vWriteData(' ');
-
-        Global_s64_Frequency = (  (double) (TimerCLK/(Global_ThirdICR_Value - Global_FirstICR_Value))  );
-        LCD_WriteNUM(Global_s64_Frequency);
-        _delay_ms(3000);
-        // Clearing old data
-        edge =0;
-        Global_FirstICR_Value =0;
-        Global_ICU_OVFs_count =0;
-        Global_SecondICR_Value =0;
-        Global_ThirdICR_Value =0;
-        Global_s64_Frequency = 0;
-
+        /* code */
     }
     
+    
 }
+
+/***@brief: this version works with interrupts */
+// int main()
+// {
+//     LCD_vInit();
+
+
+//     LCD_vWriteCommand(Clear_Display_Screen);
+//     while (1)
+//     {
+//         Timer1_Calc_Freq_and_Duty();
+//         while(edge  < 3 );
+//         LCD_vWriteString("2hda");
+//         _delay_ms(500);
+//         // make your calculations
+//         // display 2 values on lcd
+//         LCD_vWriteCommand(Clear_Display_Screen);
+//         LCD_vWriteData('F');
+//         LCD_vWriteData(':');
+//         LCD_vWriteData(' ');
+
+//         Global_s64_Frequency = (  (double) (TimerCLK/(Global_ThirdICR_Value - Global_FirstICR_Value))  );
+//         LCD_WriteNUM(Global_s64_Frequency);
+//         _delay_ms(3000);
+//         // Clearing old data
+//         edge =0;
+//         Global_FirstICR_Value =0;
+//         Global_ICU_OVFs_count =0;
+//         Global_SecondICR_Value =0;
+//         Global_ThirdICR_Value =0;
+//         Global_s64_Frequency = 0;
+
+//     }
+    
+// }
 
 /* @brief:  function calculates the freq and duty cycle of an input signal on ICP1 pin
 *           and returns those values to and callback fn hopefully!
@@ -123,29 +171,6 @@ ISR(TIMER1_OVF_vect)
 }
 
 
-void LCD_WriteNUM(u32 NUM)
-{
-	u32 reminder=0 , reversed = 0 , digits = 0;
-	if(NUM < 0)
-	{
-		LCD_vWriteData('-');
-		NUM *= (-1);
-	}
-	while(NUM)
-	{
-		reminder = NUM % 10;
-		reversed = reversed * 10 + reminder; 
-		NUM /= 10;
-		digits++;
-	}
-	while(digits)
-	{
-		reminder = reversed % 10;
-		LCD_vWriteData(reminder + '0');
-		reversed = reversed / 10;
-		digits--;
-	}
-}
 
 
 // void LCD_WriteNumber(u32 Number)
