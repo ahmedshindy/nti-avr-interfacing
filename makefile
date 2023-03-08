@@ -1,10 +1,12 @@
 CC = avr-gcc
-VPATH = App HAL/Keypad HAL/LCD MCAL/DIO MCAL/ADC MCAL/Timer
-INCLUDES := -I MCAL/DIO -I LIB -I HAL/Keypad -I HAL/LCD -I MCAL/EX_INT -I MCAL/ADC -I MCAL/Timer
+VPATH = App HAL/Keypad HAL/LCD MCAL/DIO MCAL/ADC MCAL/Timer  MCAL/USART
+INCLUDES := -I MCAL/DIO -I LIB -I HAL/Keypad -I HAL/LCD -I MCAL/EX_INT -I MCAL/ADC -I MCAL/Timer -I MCAL/USART
 CC_FLAGS := -mmcu=atmega32 -Os -std=c99 -Wall -g -F_CPU=8000000
 
 
 # These are each project dependencies and modules required
+ChatOverUSART_Tx_OBJs := ChatOverUSART_Tx.o USART_program.o DIO_program.o LCD_program.o
+USART_OBJs			:= USART_app.o USART_program.o DIO_program.o LCD_program.o
 ICU_OBJs			:= ICU_app.o Timer_program.o DIO_program.o LCD_program.o
 Ultrasonic_OBJs		:= Ultrasonic.o Timer_program.o DIO_program.o LCD_program.o
 MotorControl_OBJs 	:= MotorControl_app.o ADC_program.o Timer_program.o DIO_program.o 
@@ -27,6 +29,20 @@ PROJECT_NAME := LCD_test
 
 
 # Generating Project .elf , .hex files
+
+ChatOverUSART_Tx: $(ChatOverUSART_Tx_OBJs)
+	$(CC) $(INCLUDES) $(CC_FLAGS) $^ -o $@.elf
+	avr-objcopy -j .text -j .data -O ihex $@.elf  $@.hex
+	@size $@.hex
+	@rm *.o
+
+
+USART_app: $(USART_OBJs)
+	$(CC) $(INCLUDES) $(CC_FLAGS) $^ -o $@.elf
+	avr-objcopy -j .text -j .data -O ihex $@.elf  $@.hex
+	@size $@.hex
+	@rm *.o
+
 ICU_app: $(ICU_OBJs)
 	$(CC) $(INCLUDES) $(CC_FLAGS) $^ -o $@.elf
 	avr-objcopy -j .text -j .data -O ihex $@.elf  $@.hex
@@ -86,6 +102,12 @@ DIO_test: $(DIO_OBJs)
 	@rm *.o
 	
 # Projects compilation
+ChatOverUSART_Tx.o:ChatOverUSART_Tx.c
+	$(CC) $(INCLUDES) $(CC_FLAGS) -c $<
+
+USART_app.o:USART_app.c
+	$(CC) $(INCLUDES) $(CC_FLAGS) -c $<	
+
 ICU_app.o:ICU_app.c
 	$(CC) $(INCLUDES) $(CC_FLAGS) -c $<	
 
@@ -125,6 +147,9 @@ Keypad_program.o: Keypad_program.c Keypad_private.h Keypad_interface.h
 
 
 # MCAL Drivers
+USART_program.o:USART_program.c USART_private.h USART_interface.h 
+	$(CC) $(INCLUDES) $(CC_FLAGS) -c $<
+
 Timer_program.o:Timer_program.c Timer_private.h Timer_interface.h 
 	$(CC) $(INCLUDES) $(CC_FLAGS) -c $<
 

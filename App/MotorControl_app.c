@@ -14,6 +14,10 @@ int main()
     // read ADC val 
     ADC_init();
     u16 Locu16ADC_Val = 0x00;
+    DIO_SetPinDir(DIO_PORTB,Pin5,OUTPUT);   // DIR of motor
+    DIO_SetPinValue(DIO_PORTB,Pin5,HIGH);
+    DIO_SetPinDir(DIO_PORTB,Pin6,OUTPUT);   // EN of motor driver
+    DIO_SetPinValue(DIO_PORTB,Pin6,HIGH);
     Locu16ADC_Val = ADC_Read(ADC0);
     // map from 1024 to 256
     Locu16ADC_Val = Locu16ADC_Val/4;
