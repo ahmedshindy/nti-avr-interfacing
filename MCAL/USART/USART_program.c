@@ -120,13 +120,13 @@ ISR(USART_RXC_vect)
     static u32 counter =0;
     if(counter == 5)
     {
-        data_sent= 1;
+        data_recieved= 1;
         CLR_BIT(UCSRB,RXCIE);
         cli();
     }
     if(Rx_size == 0)
     {
-        data_sent= 0x01;
+        data_recieved= 0x01;
         // disable usart interrupts & return
         CLR_BIT(UCSRB,RXCIE);
         cli();
