@@ -1,12 +1,15 @@
 #define     F_CPU       8000000UL
 // #define     F_CPU       16000000UL
 #include "USART_interface.h"
+#include "avr/interrupt.h"
 
+extern volatile u8 data_recieved;
+extern volatile u8 data_sent;
+volatile u32 Tx_Size;
+volatile u32 Rx_size;
 
-u32 Tx_Size;
-u32 Rx_size;
 u8* Tx_buffer= NULL;  
-U8* Rx_buffer = NULL;   
+u8* Rx_buffer = NULL;   
 
 void USART_vInit()
 {
@@ -90,6 +93,8 @@ void USART_u8ReceiveData_Asynch(u8* data, u32 size)
  * 
  * 
  */
+
+/*** transmit interrupt handler */
 ISR(USART_TXC_vect)
 {
     Tx_Size--;
@@ -97,32 +102,34 @@ ISR(USART_TXC_vect)
     if(Tx_Size == 0)
     {
         CLR_BIT(UCSRB,TXCIE);
+        data_sent =0x01;
         cli();
-        return;
     }
     else if(Tx_buffer != NULL)
     {
         UDR = Tx_buffer[counter];
         counter ++;
     }
-    else 
-    {
-        return;
-    }
+
 }
 
+
+/** recive interrupt handler */
 ISR(USART_RXC_vect)
 {
-
     static u32 counter =0;
+    if(counter == 5)
+    {
+        data_sent= 1;
+        CLR_BIT(UCSRB,RXCIE);
+        cli();
+    }
     if(Rx_size == 0)
     {
+        data_sent= 0x01;
         // disable usart interrupts & return
         CLR_BIT(UCSRB,RXCIE);
         cli();
-
-
-        return;
     }
     else if(Rx_buffer != NULL)
     {
@@ -130,6 +137,4 @@ ISR(USART_RXC_vect)
         counter ++;
         Rx_size --;
     }
-
-    
 }
