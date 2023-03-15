@@ -1,11 +1,13 @@
 CC = avr-gcc
-VPATH = App HAL/Keypad HAL/LCD MCAL/DIO MCAL/ADC MCAL/Timer  MCAL/USART MCAL/SPI
-INCLUDES := -I MCAL/DIO -I LIB -I HAL/Keypad -I HAL/LCD -I MCAL/EX_INT -I MCAL/ADC -I MCAL/Timer -I MCAL/USART -I MCAL/SPI
+VPATH = App HAL/Keypad HAL/LCD MCAL/DIO MCAL/ADC MCAL/Timer  MCAL/USART MCAL/SPI	MCAL/I2C
+INCLUDES := -I MCAL/DIO -I LIB -I HAL/Keypad -I HAL/LCD -I MCAL/EX_INT -I MCAL/ADC -I MCAL/Timer -I MCAL/USART -I MCAL/SPI -I MCAL/I2C
 CC_FLAGS := -mmcu=atmega32 -Os -std=c99 -Wall -g -F_CPU=8000000
 
 
 # These are each project dependencies and modules required
-
+SMART_HOME_OBJs		:= I2C_program.o SPI_program.o DIO_program.o LCD_program.o Keypad_program.o USART_program.o
+I2C_OBJs			:= External_EEPROM.o I2C_program
++.o DIO_program.o LCD_program.o
 SPI_OBJs			:= SPI_app.o SPI_program.o DIO_program.o LCD_program.o
 ChatOverUSART_Tx_OBJs := ChatOverUSART_Tx.o USART_program.o DIO_program.o LCD_program.o
 USART_OBJs			:= USART_app.o USART_program.o DIO_program.o LCD_program.o
@@ -21,6 +23,29 @@ LCD_OBJs			:= LCD_test.o DIO_program.o LCD_program.o Keypad_program.o
 
 
 # Generating Project .elf , .hex files
+Smart_Home_Master: $(SMART_HOME_OBJs)
+	$(CC) $(INCLUDES) $(CC_FLAGS) $^ -o $@.elf
+	avr-objcopy -j .text -j .data -O ihex $@.elf  $@.hex
+	@size $@.hex
+	@rm *.o
+
+Smart_Home_Slave: $(SMART_HOME_OBJs)
+	$(CC) $(INCLUDES) $(CC_FLAGS) $^ -o $@.elf
+	avr-objcopy -j .text -j .data -O ihex $@.elf  $@.hex
+	@size $@.hex
+	@rm *.o
+
+External_EEPROM: $(I2C_OBJs)
+	$(CC) $(INCLUDES) $(CC_FLAGS) $^ -o $@.elf
+	avr-objcopy -j .text -j .data -O ihex $@.elf  $@.hex
+	@size $@.hex
+	@rm *.o
+
+I2C_app: $(I2C_OBJs)
+	$(CC) $(INCLUDES) $(CC_FLAGS) $^ -o $@.elf
+	avr-objcopy -j .text -j .data -O ihex $@.elf  $@.hex
+	@size $@.hex
+	@rm *.o
 
 SPI_app: $(SPI_OBJs)
 	$(CC) $(INCLUDES) $(CC_FLAGS) $^ -o $@.elf
@@ -101,7 +126,21 @@ DIO_test: $(DIO_OBJs)
 	@rm *.o
 	
 # Projects compilation
-SPI_app.o:ChatOverUSART_Tx.c
+Smart_Home_Master.o:Smart_Home_Master.c
+	$(CC) $(INCLUDES) $(CC_FLAGS) -c $<
+
+
+Smart_Home_Slave.o:Smart_Home_Slave.c
+	$(CC) $(INCLUDES) $(CC_FLAGS) -c $<
+
+
+External_EEPROM.o:External_EEPROM.c
+	$(CC) $(INCLUDES) $(CC_FLAGS) -c $<
+
+I2C_app.o:I2C_app.c
+	$(CC) $(INCLUDES) $(CC_FLAGS) -c $<
+
+SPI_app.o:SPI_app.c
 	$(CC) $(INCLUDES) $(CC_FLAGS) -c $<
 
 ChatOverUSART_Tx.o:ChatOverUSART_Tx.c
@@ -149,6 +188,9 @@ Keypad_program.o: Keypad_program.c Keypad_private.h Keypad_interface.h
 
 
 # MCAL Drivers
+I2C_program.o:I2C_program.c I2C_private.h I2C_interface.h 
+	$(CC) $(INCLUDES) $(CC_FLAGS) -c $<
+
 SPI_program.o:SPI_program.c SPI_private.h SPI_interface.h 
 	$(CC) $(INCLUDES) $(CC_FLAGS) -c $<
 
