@@ -1,13 +1,12 @@
 CC = avr-gcc
-VPATH = App HAL/Keypad HAL/LCD MCAL/DIO MCAL/ADC MCAL/Timer  MCAL/USART MCAL/SPI	MCAL/I2C
-INCLUDES := -I MCAL/DIO -I LIB -I HAL/Keypad -I HAL/LCD -I MCAL/EX_INT -I MCAL/ADC -I MCAL/Timer -I MCAL/USART -I MCAL/SPI -I MCAL/I2C
-CC_FLAGS := -mmcu=atmega32 -Os -std=c99 -Wall -g -F_CPU=8000000
+VPATH = App HAL/Keypad HAL/Ext_EEPROM HAL/LCD MCAL/DIO MCAL/ADC MCAL/Timer MCAL/USART MCAL/SPI MCAL/I2C 
+INCLUDES := -I MCAL/DIO -I LIB -I HAL/Keypad -I HAL/LCD -I HAL/Ext_EEPROM  -I MCAL/EX_INT -I MCAL/ADC -I MCAL/Timer -I MCAL/USART -I MCAL/SPI -I MCAL/I2C
+CC_FLAGS := -mmcu=atmega32 -Os -std=c99 -Wall -g -F_CPU=16000000UL
 
 
 # These are each project dependencies and modules required
 SMART_HOME_OBJs		:= I2C_program.o SPI_program.o DIO_program.o LCD_program.o Keypad_program.o USART_program.o
-I2C_OBJs			:= External_EEPROM.o I2C_program
-+.o DIO_program.o LCD_program.o
+I2C_OBJs			:= Ext_EEPROM_program.o I2C_program.o DIO_program.o LCD_program.o
 SPI_OBJs			:= SPI_app.o SPI_program.o DIO_program.o LCD_program.o
 ChatOverUSART_Tx_OBJs := ChatOverUSART_Tx.o USART_program.o DIO_program.o LCD_program.o
 USART_OBJs			:= USART_app.o USART_program.o DIO_program.o LCD_program.o
@@ -35,13 +34,13 @@ Smart_Home_Slave: $(SMART_HOME_OBJs)
 	@size $@.hex
 	@rm *.o
 
-External_EEPROM: $(I2C_OBJs)
+Ext_EEPROM_app: Ext_EEPROM_app.o $(I2C_OBJs)
 	$(CC) $(INCLUDES) $(CC_FLAGS) $^ -o $@.elf
 	avr-objcopy -j .text -j .data -O ihex $@.elf  $@.hex
 	@size $@.hex
 	@rm *.o
 
-I2C_app: $(I2C_OBJs)
+I2C_app: I2C_app.o $(I2C_OBJs)
 	$(CC) $(INCLUDES) $(CC_FLAGS) $^ -o $@.elf
 	avr-objcopy -j .text -j .data -O ihex $@.elf  $@.hex
 	@size $@.hex
@@ -133,8 +132,7 @@ Smart_Home_Master.o:Smart_Home_Master.c
 Smart_Home_Slave.o:Smart_Home_Slave.c
 	$(CC) $(INCLUDES) $(CC_FLAGS) -c $<
 
-
-External_EEPROM.o:External_EEPROM.c
+Ext_EEPROM_app.o:Ext_EEPROM_app.c
 	$(CC) $(INCLUDES) $(CC_FLAGS) -c $<
 
 I2C_app.o:I2C_app.c
@@ -184,6 +182,9 @@ LCD_program.o: LCD_program.c LCD_interface.h LCD_private.h LCD_config.h
 
 Keypad_program.o: Keypad_program.c Keypad_private.h Keypad_interface.h 
 	$(CC) $(INCLUDES) $(CC_FLAGS) -c $<		
+
+Ext_EEPROM_program.o:Ext_EEPROM_program.c Ext_EEPROM_config.h Ext_EEPROM_interface.h
+	$(CC) $(INCLUDES) $(CC_FLAGS) -c $<
 
 
 

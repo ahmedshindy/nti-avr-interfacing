@@ -11,6 +11,11 @@
 
 void USART_vInit();
 void USART_vSendData_Synch(u8 data);
+
+void USART_Tx_Buffer(u8* buf , u8 buf_len);
+void USART_Rx_Buffer(u8* buf , u8 buf_len);
+
+
 u8 USART_u8ReceiveData_Synch(void);
 void USART_vSendString( u8 *ptr);
 

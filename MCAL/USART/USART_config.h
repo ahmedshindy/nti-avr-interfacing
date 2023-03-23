@@ -8,7 +8,8 @@
 
 
 /**CONFIGS */
-#define BAUD_RATE       9600UL
+// #define BAUD_RATE       9600UL
+#define BAUD_RATE       57600UL
 #define PARITY          NO_PARITY
 #define STOP_BITS       2
 #define FRAME_LENGTH    8

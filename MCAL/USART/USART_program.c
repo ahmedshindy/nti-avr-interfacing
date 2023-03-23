@@ -1,5 +1,5 @@
-#define     F_CPU       8000000UL
-// #define     F_CPU       16000000UL
+// #define     F_CPU       8000000UL
+#define     F_CPU       16000000UL
 #include "USART_interface.h"
 #include "avr/interrupt.h"
 
@@ -13,13 +13,10 @@ u8* Rx_buffer = NULL;
 
 void USART_vInit()
 {
-    #if (BAUD_RATE == 9600UL)
     u16 Local_UBBR;
     Local_UBBR = ((F_CPU)/(16*BAUD_RATE)) -1;
     UBRRH = ((u8)(Local_UBBR>>8));
     UBRRL = (u8) Local_UBBR;
-
-    #endif
 
     #if (PARITY == NO_PARITY)
     // do nothing for now (recommended doing manually)
@@ -45,6 +42,25 @@ void USART_vSendData_Synch(u8 data)
     // wait for the transmit reg to be empty
     while(READ_BIT(UCSRA,UDRE)==0);
     UDR = data;
+}
+
+
+void USART_Rx_Buffer(u8* buf , u8 buf_len)
+{
+    for(int i=0; i<buf_len; i++)
+    {
+        while(READ_BIT(UCSRA,RXC)==0);
+        buf[i] = UDR;
+    }
+}
+
+void USART_Tx_Buffer(u8* buf , u8 buf_len)
+{
+    for(int i=0; i<buf_len; i++)
+    {
+        while(READ_BIT(UCSRA,UDRE)==0);
+        UDR = buf[i];
+    }
 }
 u8 USART_u8ReceiveData_Synch(void)
 {
@@ -78,6 +94,7 @@ void USART_u8ReceiveData_Asynch(u8* data, u32 size)
 {
     // enable Rx interrupts & global interrupts
     sei();
+    CLR_BIT(UCSRB,RXCIE);   // clear and set
     SET_BIT(UCSRB,RXCIE);
     Rx_buffer = data;
     Rx_size = size;    
@@ -118,15 +135,19 @@ ISR(USART_TXC_vect)
 ISR(USART_RXC_vect)
 {
     static u32 counter =0;
-    if(counter == 5)
+    // if(counter == 5)
+    // {
+    //     data_recieved= 1;
+    //     CLR_BIT(UCSRB,RXCIE);
+    //     cli();
+    // }
+    if(Rx_size == 1)
     {
-        data_recieved= 1;
-        CLR_BIT(UCSRB,RXCIE);
-        cli();
-    }
-    if(Rx_size == 0)
-    {
+        // recieve the last byte and finish
+        Rx_buffer[counter] = UDR;
         data_recieved= 0x01;
+        counter ++;
+        Rx_size --;
         // disable usart interrupts & return
         CLR_BIT(UCSRB,RXCIE);
         cli();
