@@ -5,6 +5,20 @@
 
 
 
+
+
+### Testing External EEPROM
+1. build the project
+	
+	`make Ext_EEPROM_app`
+ 
+ you should see (Ext_EEPROM_app) .elf and .hex files generated
+
+2. Open Simulation/Ext_EEPROM, load the hex file manually if not loaded and run.
+3. Check debugger!
+![Ext_EEPROM](./Simulation/screenshots/External_EEPROM.png.png)
+
+
 ### Testing Input Capture Unit (ICU)
 1. build the project called ICU_app
 	
@@ -29,13 +43,3 @@
 ![Ultrasonic](./Simulation/screenshots/Ultrasonic.png)
 
 
-### Testing External EEPROM
-1. build the project
-	
-	`make Ext_EEPROM_app`
- 
- you should see (Ext_EEPROM_app) .elf and .hex files generated
-
-2. Open Simulation/Ext_EEPROM, load the hex file manually if not loaded and run.
-3. Check debugger!
-![Ext_EEPROM](./Simulation/screenshots/Ext_EEPROM.png)
