@@ -27,3 +27,15 @@
 2. Open Simulation/Ultrasonic, load the hex file manually if not loaded and run.
 3. Modify the distance and you should see the results printed on the lcd
 ![Ultrasonic](./Simulation/screenshots/Ultrasonic.png)
+
+
+### Testing External EEPROM
+1. build the project
+	
+	`make Ext_EEPROM_app`
+ 
+ you should see (Ext_EEPROM_app) .elf and .hex files generated
+
+2. Open Simulation/Ext_EEPROM, load the hex file manually if not loaded and run.
+3. Check debugger!
+![Ext_EEPROM](./Simulation/screenshots/Ext_EEPROM.png)
