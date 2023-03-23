@@ -16,7 +16,7 @@
 
 2. Open Simulation/Ext_EEPROM, load the hex file manually if not loaded and run.
 3. Check debugger!
-![Ext_EEPROM](./Simulation/screenshots/External_EEPROM.png.png)
+![Ext_EEPROM](./Simulation/screenshots/External_EEPROM.png)
 
 
 ### Testing Input Capture Unit (ICU)
