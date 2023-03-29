@@ -37,8 +37,9 @@
 #define TOV1    2
 #define OCF0    1
 #define TOV0    0
-/***TIMER1 */
 
+
+/***TIMER1 ***/
 #define TCCR1A   (*((volatile u8*)0x4F)) // COM1A1 COM1A0 COM1B1 COM1B0 FOC1A FOC1B WGM11 WGM10 107
 /* TCCR1A */
 #define COM1A1  7
@@ -96,5 +97,7 @@
 #define Clear_OC0_OnCompareMatchNoPWM      0x02
 #define Set_OC0_OnCompareMatchNoPWM        0x03
 
+
+#define T1_Mode_Normal              0x00
 
 #endif

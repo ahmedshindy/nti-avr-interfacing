@@ -15,8 +15,43 @@ volatile static u32 Global_OVFs_Counter =0;
 
 
 
+/*** Timer 1 16 bit timer**/
+
+/* this function sets timer1 to overflow each pre-defined time intervals, to call the scheduler isr
+*   no prescalar, overflows approximately each 4ms
+*
+* */
+Timer1_InitNormal()
+{
+
+    // tByte i;
+    // for (i = 0; i < SCH_MAX_TASKS; i++)
+    // {
+    // SCH_Delete_Task(i);
+    // }
+    /*Clear WGM11:WGM10 bits to select normal mode*/
+    TCCR1A &=~((1<<WGM10)| (1<<WGM11));
+    TCCR1A =0x00;
+    TCCR1B &=~((1<<WGM12)| (1<<WGM13));
+    /*seclect frequency prescalar = 1 */
+    SET_BIT(TCCR1B,CS10);
+    /*Enable timer interrupts and global interrupt */
+    SET_BIT(TIMSK_Reg,TOIE1);
+    sei();
+}
 
 
+
+void Timer1_InitFastPWM(void)
+{
+    // set OC1A
+    // select mode 
+    // SET_BIT(TCCR1A,)
+    // SET_BIT(TCCR1A,)
+    // SET_BIT(TCCR1A,)
+    // SET_BIT(TCCR1A,)
+
+}
 void Timer0_InitCTC(void)
 {
 
@@ -43,18 +78,6 @@ void Timer0_InitPhCorrPWM(u8 DutyCycle)
 }
 
 
-void Timer1_InitFastPWM(void)
-{
-    // set OC1A
-    // select mode 
-    // SET_BIT(TCCR1A,)
-    // SET_BIT(TCCR1A,)
-    // SET_BIT(TCCR1A,)
-    // SET_BIT(TCCR1A,)
-
-
-
-}
 void Timer0_Init(void)
 {
     // CTC mode
