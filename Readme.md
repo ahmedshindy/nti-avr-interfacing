@@ -8,6 +8,9 @@
 
 
 ### Testing External EEPROM
+
+- Description: Reading/writing to an External EEPROM using I2C communication protocol
+
 1. build the project
 	
 	`make Ext_EEPROM_app`
@@ -20,6 +23,9 @@
 
 
 ### Input Capture Unit (ICU)
+
+Description: Calculating the frequency and duty cycle of digital signal using Timer 1 input capture unit in the atmega32
+
 1. build the project called ICU_app
 	
 	`make ICU_app`
@@ -32,6 +38,9 @@
 <!-- ![Ultrasonic](./Simulation/screenshots/ICU_app.png) -->
 
 ### Ultrasonic
+
+- Description: Calculating the distance of from an object using ultrasonic sensor
+
 1. build the project
 	
 	`make Ultrasonic`
